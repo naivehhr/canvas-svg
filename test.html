@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .myLabel {
+      background-color: yellow;
+    }
+  </style>
+  <script>
+    window.onload = function () {
+
+      document.onmouseup = function (e) {
+        // var range = document.createRange();
+        // var newNode = document.createElement("p");
+        // range.selectNode(document.getElementsByTagName("div").item(0));
+        // c
+
+        let userSelection = window.getSelection();
+        let selRange = userSelection.getRangeAt(0);
+        const { isCollapsed } = userSelection
+        // userSelection.collapseToEnd()
+        if (!isCollapsed) {
+          console.log('userSelection', userSelection)
+          console.log('anchorNode', userSelection.anchorNode)
+          console.log('anchorOffset', userSelection.anchorOffset)
+          console.log('selRange', selRange)
+          const mySpan = document.createElement('span')
+          mySpan.setAttribute('class', 'myLabel')
+          mySpan.appendChild(selRange.extractContents())
+          // selRange.surroundContents(mySpan); // 报错的时候直接用下面的
+          selRange.insertNode(mySpan)
+          // var documentFragment = selRange.extractContents();
+          // document.body.appendChild(documentFragment);
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <p>
+    当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+  </p>
+</body>
+
+</html>
