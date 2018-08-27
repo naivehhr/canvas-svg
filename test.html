@@ -7,13 +7,41 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    .myLabel {
+    .myLable {
       background-color: yellow;
+    }
+
+    .popup {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: red;
     }
   </style>
   <script>
+    let flag = false
     window.onload = function () {
-
+      // const b = document.getElementsByTagName('body')[0]
+      // b.addEventListener('click', (e) => {
+      //   let old = document.getElementById('myPopup')
+      //   if(old) b.removeChild(old)
+      //   const ele = makePopup(e.clientX, e.clientY)
+      //   // b.appendChild(ele)
+      // })
+      // const makePopup = (clientX, clientY) => {
+      //   console.log('clientX', clientX)
+      //   console.log('clientY', clientY)
+      //   const myDiv = document.createElement('div')
+      //   myDiv.setAttribute('id', 'myPopup')
+      //   myDiv.setAttribute('class', 'popup')
+      //   myDiv.style.left = clientX + 'px'
+      //   myDiv.style.top = clientY + 'px'
+      //   myDiv.addEventListener('click', (e)=>{
+      //     console.log('2')
+      //     e.stopPropagation()
+      //   })
+      //   return myDiv
+      // }
       document.onmouseup = function (e) {
         // var range = document.createRange();
         // var newNode = document.createElement("p");
@@ -25,15 +53,17 @@
         const { isCollapsed } = userSelection
         // userSelection.collapseToEnd()
         if (!isCollapsed) {
-          console.log('userSelection', userSelection)
-          console.log('anchorNode', userSelection.anchorNode)
-          console.log('anchorOffset', userSelection.anchorOffset)
-          console.log('selRange', selRange)
+          // console.log('userSelection', userSelection)
+          // console.log('anchorNode', userSelection.anchorNode)
+          // console.log('anchorOffset', userSelection.anchorOffset)
+          // console.log('selRange', selRange)
           const mySpan = document.createElement('span')
-          mySpan.setAttribute('class', 'myLabel')
+          mySpan.setAttribute('class', 'myLable')
           mySpan.appendChild(selRange.extractContents())
           // selRange.surroundContents(mySpan); // 报错的时候直接用下面的
           selRange.insertNode(mySpan)
+          const result = document.getElementById('pp')
+          console.log(result.outerHTML)
           // var documentFragment = selRange.extractContents();
           // document.body.appendChild(documentFragment);
         }
@@ -42,8 +72,8 @@
   </script>
 </head>
 
-<body>
-  <p>
+<body style="position: relative;">
+  <p id="pp">
     当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
   </p>
 </body>
