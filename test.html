@@ -17,31 +17,58 @@
       height: 100px;
       background: red;
     }
+
+    .note {
+      position: fixed;
+      height: 200px;
+      width: 100%;
+      bottom: 0;
+      background: red;
+    }
   </style>
   <script>
-    let flag = false
+    // let flag = false
     window.onload = function () {
-      // const b = document.getElementsByTagName('body')[0]
-      // b.addEventListener('click', (e) => {
-      //   let old = document.getElementById('myPopup')
-      //   if(old) b.removeChild(old)
-      //   const ele = makePopup(e.clientX, e.clientY)
-      //   // b.appendChild(ele)
-      // })
-      // const makePopup = (clientX, clientY) => {
-      //   console.log('clientX', clientX)
-      //   console.log('clientY', clientY)
-      //   const myDiv = document.createElement('div')
-      //   myDiv.setAttribute('id', 'myPopup')
-      //   myDiv.setAttribute('class', 'popup')
-      //   myDiv.style.left = clientX + 'px'
-      //   myDiv.style.top = clientY + 'px'
-      //   myDiv.addEventListener('click', (e)=>{
-      //     console.log('2')
-      //     e.stopPropagation()
+      let id = 0
+      //   // const test = document.getElementById('test')
+      //   // test.addEventListener('click', (e) => {
+      //   //   console.log('e.pageY', e.pageY)
+      //   //   console.log('e.clientY', e.clientY)
+      //   //   console.log('e.offsetY', e.offsetY)
+      //   //   e.stopPropagation()
+      //   // })
+      //   const b = document.getElementsByTagName('body')[0]
+      //   b.addEventListener('click', (e) => {
+      //     let old = document.getElementById('myPopup')
+      //     if (old) b.removeChild(old)
+      //     console.log('e.pageY', e.pageY)
+      //     console.log('e.clientY', e.clientY)
+      //     console.log('e.offsetY', e.offsetY)
+      //     const scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+      //     const scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+      //     // console.log('scrollY', scrollY)
+      //     const x = e.pageX || e.clientX + scrollX;
+      //     const y = e.pageY || e.clientY + scrollY;
+      //     const ele = makePopup(x, y)
+      //     b.appendChild(ele)
       //   })
-      //   return myDiv
+      //   const makePopup = (clientX, clientY) => {
+      //     console.log('clientX', clientX)
+      //     console.log('clientY', clientY)
+      //     const myDiv = document.createElement('div')
+      //     myDiv.setAttribute('id', 'myPopup')
+      //     myDiv.setAttribute('class', 'popup')
+      //     myDiv.style.left = clientX + 'px'
+      //     myDiv.style.top = clientY + 'px'
+      //     myDiv.addEventListener('click', (e) => {
+      //       console.log('2')
+      //       e.stopPropagation()
+      //     })
+      //     return myDiv
       // }
+      const warp = document.getElementById('pp')
+      const oldHtml = localStorage.getItem('_html')
+      // if(oldHtml) warp.innerHTML = oldHtml
       document.onmouseup = function (e) {
         // var range = document.createRange();
         // var newNode = document.createElement("p");
@@ -59,15 +86,45 @@
           // console.log('selRange', selRange)
           const mySpan = document.createElement('span')
           mySpan.setAttribute('class', 'myLable')
+          mySpan.setAttribute('data-item', `target_${id}`)
           mySpan.appendChild(selRange.extractContents())
           // selRange.surroundContents(mySpan); // 报错的时候直接用下面的
           selRange.insertNode(mySpan)
           const result = document.getElementById('pp')
-          console.log(result.outerHTML)
+          // console.log(result.outerHTML)
+          createNote(id++)
+          // saveHtml(result.outerHTML)
           // var documentFragment = selRange.extractContents();
           // document.body.appendChild(documentFragment);
         }
       }
+    }
+
+
+    function saveHtml(htmlString) {
+      localStorage.setItem('_html', htmlString)
+    }
+
+    function createNote(id) {
+      const noteArea = document.getElementById('noteArea')
+      noteArea.appendChild(makeTextArea(id))
+    }
+
+    function makeTextArea(id){
+      const textArea = document.createElement('textarea')
+      textArea.setAttribute('data-item-note', `note_${id}`)
+      textArea.setAttribute('id', `note_${id}`)
+      // textArea.onclick = function (){
+      //   console.log(this.dataset)
+      // }
+      textArea.addEventListener('click', function(){
+        console.log(this)
+      })
+      textArea.addEventListener('blur', function(e){
+        const d = document.getElementById(`note_${id}`)
+        console.log(d)
+      })
+      return textArea
     }
   </script>
 </head>
@@ -75,7 +132,13 @@
 <body style="position: relative;">
   <p id="pp">
     当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+    当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+    当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生 ，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+    当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+    当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
   </p>
+  <div class="note" id="noteArea">
+  </div>
 </body>
 
 </html>
