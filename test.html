@@ -90,11 +90,17 @@
     }
 
     function cancleNote(e) {
+      // 删除评论
       const ele = e.parentNode.parentNode
       const noteArea = document.getElementById('noteArea')
+      const artical = document.getElementById('artical')
       noteArea.removeChild(ele)
+
+      // 还原span至文本
       const selectSpan = document.querySelector(`span[data-select-item="${ele.dataset.noteArea}"]`)
-      selectSpan.setAttribute('class', '') // 这里不应该光改class还得移除span
+      const text = selectSpan.innerHTML
+      const newHtml = artical.innerHTML.replace(/<span class=\"myLable\"(.)+>(.*?)<\/span>/, text)
+      artical.innerHTML = newHtml
       saveNote()
     }
 
@@ -104,7 +110,7 @@
       myDiv.setAttribute('class', 'popup')
       myDiv.style.left = clientX + 'px'
       myDiv.style.top = clientY + 'px'
-      _top = clientY + 'px'
+      _top = (clientY - 10) + 'px'
       const btn = document.createAttribute('Button')
       myDiv.innerHTML = '<button onclick="myFc()">按钮</button><button onclick="myFcCancle()">取消</button>'
       myDiv.addEventListener('click', (e) => {
@@ -185,7 +191,6 @@
 
           // selRange.deleteContents()
           // selRange.insertNode(str)
-          const result = document.getElementById('pp')
           // console.log(result.outerHTML)
           // createNote(id++) // 创建笔记
           // saveHtml(result.outerHTML)
@@ -224,11 +229,9 @@
       const { value, id } = e
       const ele = document.getElementById(id)
       ele.innerHTML = value
-      console.log(value)
     }
 
     function handleNoteMouseout(e) {
-      console.log(e)
       const noteID = e.dataset.selectItemNote
       // 可以循环找，也可以用正则
       // console.log(`span[data-select-item="${noteID}"]`)
@@ -269,14 +272,16 @@
 <body style="position: relative;">
   <div style="display: flex; line-height: 2">
     <div style="flex: 2" id="artical">
-      <p id="pp">
+      <p id="paragraph">
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生 ，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
-        <div><img src="./logo.jpg" alt="" sizes="" srcset="" style="width: 100px; height: 100px"></div>
-        123123当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
       </p>
+
+      <div><img src="./logo.jpg" alt="" sizes="" srcset="" style="width: 100px; height: 100px"></div>
+      <div>123123当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。</div>
+      <div>6666当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。</div>
     </div>
     <div class="note" id="noteArea">
     </div>
