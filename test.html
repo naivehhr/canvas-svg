@@ -24,14 +24,14 @@
     }
 
     .note {
+      position: relative;
       flex: 1;
       width: 100%;
       background: deepskyblue;
     }
 
     .noteArea {
-      display: flex;
-      flex-direction: column;
+      position: absolute;
     }
 
     .noteActive {
@@ -43,9 +43,9 @@
     // let flag = false
     let userSelection
     let selRange
-    let id = 0
+    let id = localStorage.getItem('id') + 1 || 0
+    let _top = '0px'
     function makeModal(e) {
-      console.log('makeModal')
       const _body = document.getElementsByTagName('body')[0]
       let old = document.getElementById('myPopup')
       if (old) _body.removeChild(old)
@@ -75,15 +75,18 @@
     }
 
     function saveNote() {
-      const textSource = document.getElementById('pp').outerHTML
-      const noteSource = document.getElementById('noteArea')
-      const arr = noteSource.querySelectorAll('textarea[data-select-item-note]')
-      arr.forEach(i => {
-        console.log(i.value)
-      })
-      console.log(arr)
-      // localStorage.setItem('textSourceHtml', textSource)
-      // localStorage.setItem('noteSourceHtml', noteSource)
+      const textSource = document.getElementById('artical').innerHTML
+      const noteSource = document.getElementById('noteArea').innerHTML
+      // console.log('textSource', textSource)
+      // console.log('noteSource', noteSource)
+      // const arr = noteSource.querySelectorAll('textarea[data-select-item-note]')
+      // arr.forEach(i => {
+      //   console.log(i.value)
+      // })
+      // console.log(arr)
+      localStorage.setItem('textSourceHtml', textSource)
+      localStorage.setItem('noteSourceHtml', noteSource)
+      localStorage.setItem('id', id)
     }
 
     function cancleNote(e) {
@@ -91,17 +94,17 @@
       const noteArea = document.getElementById('noteArea')
       noteArea.removeChild(ele)
       const selectSpan = document.querySelector(`span[data-select-item="${ele.dataset.noteArea}"]`)
-      selectSpan.setAttribute('class', '')
+      selectSpan.setAttribute('class', '') // 这里不应该光改class还得移除span
+      saveNote()
     }
 
     function makePopup(clientX, clientY) {
-      // console.log('clientX', clientX)
-      // console.log('clientY', clientY)
       const myDiv = document.createElement('div')
       myDiv.setAttribute('id', 'myPopup')
       myDiv.setAttribute('class', 'popup')
       myDiv.style.left = clientX + 'px'
       myDiv.style.top = clientY + 'px'
+      _top = clientY + 'px'
       const btn = document.createAttribute('Button')
       myDiv.innerHTML = '<button onclick="myFc()">按钮</button><button onclick="myFcCancle()">取消</button>'
       myDiv.addEventListener('click', (e) => {
@@ -127,18 +130,19 @@
     }
 
     window.onload = function () {
-      const warp = document.getElementById('pp')
+      const artical = document.getElementById('artical')
       const noteArea = document.getElementById('noteArea')
       // const oldHtml = localStorage.getItem('textSourceHtml')
       const oldTextSourceHtml = localStorage.getItem('textSourceHtml')
       const oldNoteSourceHtml = localStorage.getItem('noteSourceHtml')
       // console.log('oldTextSourceHtml', oldTextSourceHtml)
-      if(oldTextSourceHtml) warp.innerHTML = oldTextSourceHtml
-      if(oldNoteSourceHtml) noteArea.innerHTML = oldNoteSourceHtml
-      warp.onclick = function (e) {
+      if (oldTextSourceHtml) artical.innerHTML = oldTextSourceHtml
+      if (oldNoteSourceHtml) noteArea.innerHTML = oldNoteSourceHtml
+      artical.onclick = function (e) {
         myFcCancle()
         userSelection = window.getSelection();
         selRange = userSelection.getRangeAt(0);
+        // console.log('赋值', selRange)
         const { isCollapsed } = userSelection
         // console.log('isCollapsed', isCollapsed)
         // var isSelectionEmpty = false;
@@ -206,43 +210,46 @@
       noteArea.appendChild(makeTextArea(id))
     }
 
+    function handelNoteHover(e) {
+      const noteID = e.dataset.selectItemNote
+      // 可以循环找，也可以用正则
+      // console.log(`span[data-select-item="${noteID}"]`)
+      const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
+      selectSpan.setAttribute('class', 'myLable noteActive')
+      // const ele = e.target
+      // ele.setAttribute('class', 'noteActive')
+    }
+
+    function handleNoteChagen(e) {
+      const { value, id } = e
+      const ele = document.getElementById(id)
+      ele.innerHTML = value
+      console.log(value)
+    }
+
+    function handleNoteMouseout(e) {
+      console.log(e)
+      const noteID = e.dataset.selectItemNote
+      // 可以循环找，也可以用正则
+      // console.log(`span[data-select-item="${noteID}"]`)
+      const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
+      selectSpan.setAttribute('class', 'myLable')
+    }
+
     function makeTextArea(id) {
       const div = document.createElement('div')
       div.setAttribute('class', 'noteArea')
       div.setAttribute('data-note-area', `${id}`)
+      div.style.top = _top;
       const textArea = document.createElement('textarea')
       textArea.setAttribute('data-select-item-note', `${id}`)
+      textArea.setAttribute('onmouseover', 'handelNoteHover(this)')
+      textArea.setAttribute('onmouseout', 'handleNoteMouseout(this)')
+      textArea.setAttribute('onchange', 'handleNoteChagen(this)')
+      textArea.setAttribute('value', '')
       textArea.setAttribute('id', `note_${id}`)
-      // textArea.onclick = function (){
-      //   console.log(this.dataset)
-      // }
-      textArea.addEventListener('click', function () {
-        // console.log(this)
-      })
-      textArea.addEventListener('blur', function (e) {
-        // const d = document.getElementById(`note_${id}`)
-        // console.log(d.value)
-      })
-      textArea.addEventListener('mouseover', function (e) {
-        const noteID = e.target.dataset.selectItemNote
-        // 可以循环找，也可以用正则
-        // console.log(`span[data-select-item="${noteID}"]`)
-        const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
-        selectSpan.setAttribute('class', 'myLable noteActive')
-        // const ele = e.target
-        // ele.setAttribute('class', 'noteActive')
-      })
-      textArea.addEventListener('mouseout', function (e) {
-        const noteID = e.target.dataset.selectItemNote
-        // 可以循环找，也可以用正则
-        // console.log(`span[data-select-item="${noteID}"]`)
-        const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
-        selectSpan.setAttribute('class', 'myLable')
-        // const ele = e.target
-        // ele.setAttribute('class', 'noteActive')
-      })
       div.appendChild(textArea)
-      div.insertAdjacentHTML('beforeend', '<div><button onclick="saveNote()">保存</button><button onclick="cancleNote(this)">取消</button></div>')
+      div.insertAdjacentHTML('beforeend', '<div><button onclick="saveNote()">保存</button><button onclick="cancleNote(this)">删除</button></div>')
       return div
     }
     function Person() {
@@ -261,13 +268,14 @@
 
 <body style="position: relative;">
   <div style="display: flex; line-height: 2">
-    <div style="flex: 2">
+    <div style="flex: 2" id="artical">
       <p id="pp">
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生 ，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
         当前住房租赁市场制度及市场体系还不完善，导致正规的租赁市场乱象丛生，非正规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
-        当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
+        <div><img src="./logo.jpg" alt="" sizes="" srcset="" style="width: 100px; height: 100px"></div>
+        123123当前住房租赁市场制度及市场体系还不完善，导致的的租赁市场乱象丛生，非规的租赁“黑市”盛行，严重影响租赁双方的权益。一方面，中低收入家庭、年轻家庭、外来人口住房难；另一方面，住房存在结构性空置问题。其原因之一是，租户利益保障制度缺乏，对于租期、租价和租赁期间租户的诸多权益，没有明确硬约束力的法律规定。
       </p>
     </div>
     <div class="note" id="noteArea">
