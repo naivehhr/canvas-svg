@@ -15,6 +15,7 @@
     .myLable {
       /* border: 1px solid red; */
       background-color: yellow;
+      transition: all .5s;
     }
 
     .popup {
@@ -33,6 +34,11 @@
     .noteArea {
       display: flex;
       flex-direction: column;
+    }
+
+    .noteActive {
+      box-shadow: 0 0 5px #888888;
+      transition: all .5s;
     }
   </style>
   <script>
@@ -60,6 +66,7 @@
     function myFc() {
       createNote()
       handleRagneSelection()
+      id++
       myFcCancle()
     }
 
@@ -88,7 +95,7 @@
     function handleRagneSelection() {
       const mySpan = document.createElement('span')
       mySpan.setAttribute('class', 'myLable')
-      mySpan.setAttribute('data-item', `target_${id}`)
+      mySpan.setAttribute('data-select-item', `${id}`)
       // 不可以覆盖选择
       selRange.surroundContents(mySpan); // 报错的时候直接用下面的
     }
@@ -190,24 +197,42 @@
 
     function createNote() {
       const noteArea = document.getElementById('noteArea')
-      noteArea.appendChild(makeTextArea(id++))
+      noteArea.appendChild(makeTextArea(id))
     }
 
     function makeTextArea(id) {
       const div = document.createElement('div')
       div.setAttribute('class', 'noteArea')
       const textArea = document.createElement('textarea')
-      textArea.setAttribute('data-item-note', `note_${id}`)
+      textArea.setAttribute('data-select-item-note', `${id}`)
       textArea.setAttribute('id', `note_${id}`)
       // textArea.onclick = function (){
       //   console.log(this.dataset)
       // }
       textArea.addEventListener('click', function () {
-        console.log(this)
+        // console.log(this)
       })
       textArea.addEventListener('blur', function (e) {
-        const d = document.getElementById(`note_${id}`)
-        console.log(d.value)
+        // const d = document.getElementById(`note_${id}`)
+        // console.log(d.value)
+      })
+      textArea.addEventListener('mouseover', function(e){
+        const noteID = e.target.dataset.selectItemNote
+        // 可以循环找，也可以用正则
+        // console.log(`span[data-select-item="${noteID}"]`)
+        const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
+        selectSpan.setAttribute('class', 'myLable noteActive')
+        // const ele = e.target
+        // ele.setAttribute('class', 'noteActive')
+      })
+      textArea.addEventListener('mouseout', function(e){
+        const noteID = e.target.dataset.selectItemNote
+        // 可以循环找，也可以用正则
+        // console.log(`span[data-select-item="${noteID}"]`)
+        const selectSpan = document.querySelector(`span[data-select-item="${noteID}"]`)
+        selectSpan.setAttribute('class', 'myLable')
+        // const ele = e.target
+        // ele.setAttribute('class', 'noteActive')
       })
       div.appendChild(textArea)
       div.insertAdjacentHTML('beforeend', '<div><button onclick="myFc()">添加</button><button onclick="myFcCancle()">取消</button></div>')
