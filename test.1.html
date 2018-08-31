@@ -20,13 +20,15 @@
 
     .popup {
       position: absolute;
-      background: gainsboro;
+      width: 100px;
+      height: 100px;
+      background: red;
     }
 
     .note {
       flex: 1;
       width: 100%;
-      background: deepskyblue;
+      background: red;
     }
 
     .noteArea {
@@ -62,36 +64,16 @@
     }
 
     function myFc() {
-      myFcCancle()
-      if (!handleRagneSelection()) return
       createNote()
+      handleRagneSelection()
       id++
+      myFcCancle()
     }
 
     function myFcCancle() {
       const _body = document.getElementsByTagName('body')[0]
       let old = document.getElementById('myPopup')
       old && _body.removeChild(old)
-    }
-
-    function saveNote() {
-      const textSource = document.getElementById('pp').outerHTML
-      const noteSource = document.getElementById('noteArea')
-      const arr = noteSource.querySelectorAll('textarea[data-select-item-note]')
-      arr.forEach(i => {
-        console.log(i.value)
-      })
-      console.log(arr)
-      // localStorage.setItem('textSourceHtml', textSource)
-      // localStorage.setItem('noteSourceHtml', noteSource)
-    }
-
-    function cancleNote(e) {
-      const ele = e.parentNode.parentNode
-      const noteArea = document.getElementById('noteArea')
-      noteArea.removeChild(ele)
-      const selectSpan = document.querySelector(`span[data-select-item="${ele.dataset.noteArea}"]`)
-      selectSpan.setAttribute('class', '')
     }
 
     function makePopup(clientX, clientY) {
@@ -115,28 +97,45 @@
       mySpan.setAttribute('class', 'myLable')
       mySpan.setAttribute('data-select-item', `${id}`)
       // 不可以覆盖选择
-      // selRange.surroundContents(mySpan); // 报错的时候直接用下面的
-      try {
-        selRange.surroundContents(mySpan);
-        return true
-      } catch (error) {
-        console.log('error', error)
-        alert('不能覆盖添加')
-        return false
-      }
+      selRange.surroundContents(mySpan); // 报错的时候直接用下面的
     }
 
     window.onload = function () {
+      // window.addEventListener('click', function(e){
+      //   // myFcCancle()
+      //   console.log('window click')
+      // })
+      //   // const test = document.getElementById('test')
+      //   // test.addEventListener('click', (e) => {
+      //   //   console.log('e.pageY', e.pageY)
+      //   //   console.log('e.clientY', e.clientY)
+      //   //   console.log('e.offsetY', e.offsetY)
+      //   //   e.stopPropagation()
+      //   // })
+
+      //   const makePopup = (clientX, clientY) => {
+      //     console.log('clientX', clientX)
+      //     console.log('clientY', clientY)
+      //     const myDiv = document.createElement('div')
+      //     myDiv.setAttribute('id', 'myPopup')
+      //     myDiv.setAttribute('class', 'popup')
+      //     myDiv.style.left = clientX + 'px'
+      //     myDiv.style.top = clientY + 'px'
+      //     myDiv.addEventListener('click', (e) => {
+      //       console.log('2')
+      //       e.stopPropagation()
+      //     })
+      //     return myDiv
+      // }
       const warp = document.getElementById('pp')
-      const noteArea = document.getElementById('noteArea')
-      // const oldHtml = localStorage.getItem('textSourceHtml')
-      const oldTextSourceHtml = localStorage.getItem('textSourceHtml')
-      const oldNoteSourceHtml = localStorage.getItem('noteSourceHtml')
-      // console.log('oldTextSourceHtml', oldTextSourceHtml)
-      if(oldTextSourceHtml) warp.innerHTML = oldTextSourceHtml
-      if(oldNoteSourceHtml) noteArea.innerHTML = oldNoteSourceHtml
+      const oldHtml = localStorage.getItem('_html')
+      // if(oldHtml) warp.innerHTML = oldHtml
       warp.onclick = function (e) {
-        myFcCancle()
+        // var range = document.createRange();
+        // var newNode = document.createElement("p");
+        // range.selectNode(document.getElementsByTagName("div").item(0));
+        e.stopPropagation()
+      myFcCancle()
         userSelection = window.getSelection();
         selRange = userSelection.getRangeAt(0);
         const { isCollapsed } = userSelection
@@ -209,7 +208,6 @@
     function makeTextArea(id) {
       const div = document.createElement('div')
       div.setAttribute('class', 'noteArea')
-      div.setAttribute('data-note-area', `${id}`)
       const textArea = document.createElement('textarea')
       textArea.setAttribute('data-select-item-note', `${id}`)
       textArea.setAttribute('id', `note_${id}`)
@@ -223,7 +221,7 @@
         // const d = document.getElementById(`note_${id}`)
         // console.log(d.value)
       })
-      textArea.addEventListener('mouseover', function (e) {
+      textArea.addEventListener('mouseover', function(e){
         const noteID = e.target.dataset.selectItemNote
         // 可以循环找，也可以用正则
         // console.log(`span[data-select-item="${noteID}"]`)
@@ -232,7 +230,7 @@
         // const ele = e.target
         // ele.setAttribute('class', 'noteActive')
       })
-      textArea.addEventListener('mouseout', function (e) {
+      textArea.addEventListener('mouseout', function(e){
         const noteID = e.target.dataset.selectItemNote
         // 可以循环找，也可以用正则
         // console.log(`span[data-select-item="${noteID}"]`)
@@ -242,7 +240,7 @@
         // ele.setAttribute('class', 'noteActive')
       })
       div.appendChild(textArea)
-      div.insertAdjacentHTML('beforeend', '<div><button onclick="saveNote()">保存</button><button onclick="cancleNote(this)">取消</button></div>')
+      div.insertAdjacentHTML('beforeend', '<div><button onclick="myFc()">添加</button><button onclick="myFcCancle()">取消</button></div>')
       return div
     }
     function Person() {
@@ -271,6 +269,7 @@
       </p>
     </div>
     <div class="note" id="noteArea">
+      asdfsfas
     </div>
   </div>
 
