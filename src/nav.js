@@ -1,8 +1,8 @@
 /*
- * @Author: aran.hu 
- * @Date: 2018-09-30 00:43:14 
+ * @Author: aran.hu
+ * @Date: 2018-09-30 00:43:14
  * @Last Modified by: aran.hu
- * @Last Modified time: 2018-09-30 00:48:38
+ * @Last Modified time: 2019-05-24 01:04:12
  */
 import React, { Component } from "react";
 
@@ -32,36 +32,29 @@ export default class nav extends Component {
         `[data-channel="${item}"]`
       )[0];
       const wrapElement = document.getElementById("wrap");
-      const { scrollLeft, scrollWidth } = wrapElement;
       // ele距离屏幕左边距离
       const rectLeft = targetEle.getBoundingClientRect().left;
-
       // 中间点间距
       const centerCoordinate =
         (document.body.clientWidth - targetEle.offsetWidth) / 2;
       const diff = rectLeft - centerCoordinate;
-      const diffValue = Math.abs(diff);
-      if (diff < 0) {
-        // 向右移动
-        if (scrollLeft >= diffValue) {
-          wrapElement.scrollLeft -= diffValue;
-        } else {
-          wrapElement.scrollLeft = 0;
-        }
-      } else if (diff > 0) {
-        // 向左移动
-        const scrollRight =
-          scrollWidth - document.body.clientWidth - scrollLeft;
-        if (scrollRight >= diffValue) {
-          wrapElement.scrollLeft += diffValue;
-        } else {
-          wrapElement.scrollLeft = scrollWidth;
-        }
-      } else {
-        // 相等不移动
-      }
+      this.scrollByRaf(wrapElement, diff);
     };
   };
+
+  scrollByRaf(dom, offset) {
+    const frequency = 15
+    const step = offset / frequency;
+    let times = 1;
+    const move = () => {
+      dom.scrollLeft += step;
+      if (times < frequency) {
+        times++;
+        window.requestAnimationFrame(move);
+      }
+    };
+    window.requestAnimationFrame(move);
+  }
 
   render() {
     const menuView = menu.map((item, index) => {
